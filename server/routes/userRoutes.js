@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations } = require('../controllers/userController');
+const { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations, notifyCaregiver, triggerAIStandby } = require('../controllers/userController');
 
 // POST /api/users
 router.post('/', registerUser);
@@ -19,5 +19,11 @@ router.get('/:id/caregivers', getCaregiverPhoneNumbers);
 
 // GET /api/users/:id/patients
 router.get('/:id/patients', getPatientLocations);
+
+// POST /api/users/notify-caregiver
+router.post('/notify-caregiver', notifyCaregiver);
+
+// POST /api/users/trigger-ai-standby
+router.post('/trigger-ai-standby', triggerAIStandby);
 
 module.exports = router;

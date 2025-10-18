@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const { sendPushNotification } = require('../services/firebaseService');
+const { generateVoiceResponse } = require('../services/elevenLabsService');
 
 // Register a new user
 const registerUser = async (req, res, next) => {
@@ -98,4 +100,26 @@ const getPatientLocations = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations };
+// Send push notification to caregiver
+const notifyCaregiver = async (req, res, next) => {
+  try {
+    const { caregiverToken, title, body } = req.body;
+    const response = await sendPushNotification(caregiverToken, title, body);
+    res.status(200).json({ message: 'Notification sent', response });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Trigger ElevenLabs AI agent standby
+const triggerAIStandby = async (req, res, next) => {
+  try {
+    const { text } = req.body;
+    const audioUrl = await generateVoiceResponse(text);
+    res.status(200).json({ message: 'AI agent on standby', audioUrl });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations, notifyCaregiver, triggerAIStandby };
