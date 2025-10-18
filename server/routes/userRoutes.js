@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations } = require('../controllers/userController');
+const { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations } = require('../controllers/userController');
 
 // POST /api/users
 router.post('/', registerUser);
@@ -13,5 +13,11 @@ router.get('/:id/family-phones', getFamilyPhoneNumbers);
 
 // GET /api/users/:id/family-locations/:familyId
 router.get('/:id/family-locations/:familyId', getFamilyLocations);
+
+// GET /api/users/:id/caregivers
+router.get('/:id/caregivers', getCaregiverPhoneNumbers);
+
+// GET /api/users/:id/patients
+router.get('/:id/patients', getPatientLocations);
 
 module.exports = router;

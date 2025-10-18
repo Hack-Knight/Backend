@@ -64,4 +64,38 @@ const getFamilyLocations = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations };
+// Fetch caregivers' phone numbers for a patient
+const getCaregiverPhoneNumbers = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).populate('caregivers.caregiverId', 'name phone');
+    if (!user || user.role !== 'user') {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+
+    const caregiverPhoneNumbers = user.caregivers.map((caregiver) => ({
+      name: caregiver.name,
+      phone: caregiver.phone,
+    }));
+
+    res.status(200).json(caregiverPhoneNumbers);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Fetch patients' locations (caregiver only)
+const getPatientLocations = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const patients = await User.find({ _id: { $in: user.patients.map((p) => p.patientId) } }, 'currentLocation name');
+    res.status(200).json(patients);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { registerUser, getUser, getFamilyPhoneNumbers, getFamilyLocations, getCaregiverPhoneNumbers, getPatientLocations };
