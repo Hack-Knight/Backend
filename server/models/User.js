@@ -10,6 +10,13 @@ const userSchema = new mongoose.Schema({
     lat: { type: Number },
     lng: { type: Number },
   },
+  family: [
+    {
+      memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      relationship: { type: String }, // e.g., 'parent', 'sibling', 'child'
+      isAdmin: { type: Boolean, default: false },
+    },
+  ],
 });
 
 module.exports = mongoose.model('User', userSchema);
