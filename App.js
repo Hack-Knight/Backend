@@ -1,1 +1,1 @@
-// test
+require('./server/index.js');
